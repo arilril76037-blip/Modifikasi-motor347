@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NeoSave - Aplikasi Tabungan</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+body{background:linear-gradient(135deg,#5b21b6,#2563eb,#06b6d4);min-height:100vh;padding:18px;color:#fff}
+.phone{max-width:430px;margin:auto;background:rgba(255,255,255,.12);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.18);border-radius:28px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,.35)}
+.header{padding:26px;background:linear-gradient(135deg,#7c3aed,#2563eb)}
+.header h1{font-size:28px}.muted{opacity:.85}
+.balance{margin-top:18px;background:rgba(255,255,255,.15);border-radius:22px;padding:18px}
+.balance h2{font-size:34px}
+.content{padding:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:rgba(255,255,255,.12);padding:16px;border-radius:20px}
+.card span{font-size:12px;opacity:.8}
+.card strong{display:block;font-size:22px;margin-top:6px}
+.section{margin-top:18px}
+.section h3{margin-bottom:10px}
+.progress{height:12px;background:rgba(255,255,255,.18);border-radius:999px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#bef264)}
+input,select{width:100%;padding:14px;border:none;border-radius:14px;background:rgba(255,255,255,.15);color:#fff;outline:none}
+input::placeholder{color:#e8e8ff}
+button{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(90deg,#22c55e,#16a34a);color:#fff;font-weight:700;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-2px)}
+.history{display:flex;flex-direction:column;gap:10px;max-height:260px;overflow:auto}
+.item{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.12);padding:12px;border-radius:14px}
+.plus{color:#86efac}.minus{color:#fca5a5}
+.footer{padding:16px;text-align:center;font-size:12px;opacity:.8}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="header">
+<h1>💰 NeoSave</h1>
+<div class="muted">Aplikasi Tabungan Modern</div>
+<div class="balance">
+<div class="muted">Saldo Saat Ini</div>
+<h2 id="saldo">Rp0</h2>
+</div>
+</div>
+
+<div class="content">
+<div class="grid">
+<div class="card"><span>Total Setoran</span><strong id="setoran">Rp0</strong></div>
+<div class="card"><span>Total Penarikan</span><strong id="tarikan">Rp0</strong></div>
+</div>
+
+<div class="section">
+<h3>Target Tabungan</h3>
+<input id="targetInput" type="number" placeholder="Masukkan target (Rp)">
+<button style="margin-top:10px" onclick="setTarget()">Simpan Target</button>
+<div style="margin-top:12px" class="progress"><div class="fill" id="fill"></div></div>
+<div class="muted" style="margin-top:8px" id="targetText">Target: Rp0 (0%)</div>
+</div>
+
+<div class="section">
+<h3>Tambah Transaksi</h3>
+<select id="jenis"><option value="setor">💚 Setoran</option><option value="tarik">❤️ Penarikan</option></select>
+<input id="jumlah" type="number" placeholder="Jumlah (Rp)" style="margin-top:10px">
+<input id="catatan" placeholder="Catatan (opsional)" style="margin-top:10px">
+<button style="margin-top:10px" onclick="tambah()">Simpan Transaksi</button>
+</div>
+
+<div class="section">
+<h3>Riwayat</h3>
+<div id="history" class="history"></div>
+</div>
+</div>
+<div class="footer">NeoSave • Data tersimpan otomatis di browser (LocalStorage)</div>
+</div>
+
+<script>
+let data=JSON.parse(localStorage.getItem('neosave')||'{"saldo":0,"setoran":0,"tarikan":0,"target":0,"riwayat":[]}');
+
+const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+
+function simpan(){localStorage.setItem('neosave',JSON.stringify(data));render();}
+function render(){
+saldo.textContent=rupiah(data.saldo);
+setoran.textContent=rupiah(data.setoran);
+tarikan.textContent=rupiah(data.tarikan);
+let p=data.target?Math.min(data.saldo/data.target*100,100):0;
+fill.style.width=p+'%';
+targetText.textContent=`Target: ${rupiah(data.target)} (${p.toFixed(0)}%)`;
+targetInput.value=data.target||'';
+history.innerHTML='';
+if(!data.riwayat.length){history.innerHTML='<div class="item"><span>Belum ada transaksi</span></div>';return;}
+data.riwayat.slice().reverse().forEach(r=>{
+const d=document.createElement('div');
+d.className='item';
+d.innerHTML=`<div><strong>${r.jenis=="setor"?"💚 Setoran":"❤️ Penarikan"}</strong><div style="font-size:12px;opacity:.8">${r.catatan||"-"} • ${r.tanggal}</div></div><strong class="${r.jenis=="setor"?"plus":"minus"}">${r.jenis=="setor"?"+":"-"}${rupiah(r.jumlah)}</strong>`;
+history.appendChild(d);
+});
+}
+function tambah(){
+const j=jenis.value;
+const x=+jumlah.value;
+if(!x||x<=0)return alert("Masukkan jumlah yang valid.");
+if(j=="tarik"&&x>data.saldo)return alert("Saldo tidak mencukupi.");
+if(j=="setor"){data.saldo+=x;data.setoran+=x;}else{data.saldo-=x;data.tarikan+=x;}
+data.riwayat.push({jenis:j,jumlah:x,catatan:catatan.value,tanggal:new Date().toLocaleDateString('id-ID')});
+jumlah.value='';catatan.value='';simpan();
+}
+function setTarget(){data.target=+targetInput.value||0;simpan();}
+render();
+</script>
+</body>
+</html>
