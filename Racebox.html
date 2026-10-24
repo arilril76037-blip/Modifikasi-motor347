@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b12">
+<title>RACEBOX — Drag Performance</title>
+<style>
+:root{--bg:#080b12;--panel:#111722;--panel2:#151d2a;--line:#273246;--text:#f3f6fc;--muted:#8e9bb0;--lime:#c8ff38;--cyan:#42d9ff;--red:#ff5268;--radius:22px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -10%,#1c2a42 0,transparent 42%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;padding:22px 18px 100px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:var(--lime);color:#10150a;display:grid;place-items:center;font-weight:1000;font-size:23px;box-shadow:0 0 30px #c8ff3830}.brand h1{font-size:22px;letter-spacing:3px;margin:0;font-weight:950}.brand small{display:block;color:var(--muted);letter-spacing:2px;font-size:9px;margin-top:3px}.status{border:1px solid var(--line);background:#111722;padding:9px 12px;border-radius:999px;color:var(--muted);font-size:11px;display:flex;gap:8px;align-items:center}.dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime)}
+.page{display:none;animation:appear .25s ease}.page.active{display:block}@keyframes appear{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:none}}.eyebrow{color:var(--lime);font-size:11px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase}.heading{font-size:clamp(26px,5vw,42px);line-height:1.05;letter-spacing:-1.5px;margin:9px 0}.sub{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 24px}.grid{display:grid;gap:16px}.dashboard{grid-template-columns:1.2fr .8fr}.card{background:linear-gradient(145deg,#151d2a,#0f141e);border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-width:0;box-shadow:0 14px 40px #00000018}.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:1px;text-transform:uppercase}.pill{font-size:10px;padding:6px 9px;border-radius:999px;color:var(--lime);background:#c8ff3814;border:1px solid #c8ff3835;letter-spacing:.5px}.speed-wrap{display:grid;place-items:center;padding:12px 0 2px}.gauge{width:min(100%,310px);aspect-ratio:1;position:relative;display:grid;place-items:center}.gauge svg{width:100%;height:100%;position:absolute;inset:0;transform:rotate(-135deg)}.gauge .track{fill:none;stroke:#293448;stroke-width:10;stroke-linecap:round;stroke-dasharray:377 565}.gauge .progress{fill:none;stroke:var(--lime);stroke-width:10;stroke-linecap:round;stroke-dasharray:0 565;filter:drop-shadow(0 0 7px #c8ff3880);transition:stroke-dasharray .2s}.gauge-inner{text-align:center;z-index:1;margin-top:10px}.speed-num{font-size:clamp(52px,9vw,78px);font-weight:900;letter-spacing:-5px;line-height:1}.speed-unit{color:var(--muted);font-size:11px;letter-spacing:3px;margin-top:6px}.gauge-caption{font-size:10px;color:var(--muted);margin-top:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.stat{padding:13px;border-radius:14px;background:#0b1018;border:1px solid #202a3a}.stat label{font-size:9px;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:7px}.stat strong{font-size:19px;font-weight:850}.stat em{font-size:10px;color:var(--muted);font-style:normal}.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.btn{border:0;border-radius:13px;padding:13px 15px;font-weight:850;font-size:12px;transition:.15s}.btn:active{transform:scale(.98)}.primary{background:var(--lime);color:#12170a}.secondary{background:#202b3b;color:var(--text);border:1px solid #334158}.danger{background:#391c27;color:#ff8b9a;border:1px solid #663040}.btn:disabled{opacity:.4;cursor:not-allowed}.feature-list{display:grid;gap:10px;margin-top:16px}.feature{display:flex;align-items:center;gap:13px;padding:15px;border-radius:15px;background:#0c111a;border:1px solid #222d3d;text-align:left;color:var(--text);width:100%}.feature:hover{border-color:#64738a}.feature-icon{height:39px;width:39px;display:grid;place-items:center;border-radius:12px;background:#c8ff3814;color:var(--lime);font-size:19px;flex-shrink:0}.feature b{display:block;font-size:13px}.feature small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.arrow{margin-left:auto;color:var(--muted);font-size:18px}.split{grid-template-columns:1fr 1fr}.distance-grid{grid-template-columns:repeat(4,1fr);margin:18px 0}.distance{padding:17px 8px;border-radius:16px;border:1px solid var(--line);background:#0d131d;color:var(--text);text-align:center}.distance strong{font-size:22px;display:block}.distance span{font-size:10px;color:var(--muted);letter-spacing:1px}.distance.selected{border-color:var(--lime);background:#c8ff3810;box-shadow:inset 0 0 0 1px #c8ff3820}.field{display:grid;gap:8px;margin:14px 0}.field label{font-size:11px;color:var(--muted);font-weight:750;letter-spacing:.6px}.field input,.field select{width:100%;background:#090e16;border:1px solid #2b3749;border-radius:12px;padding:13px;color:var(--text);outline:none}.field input:focus,.field select:focus{border-color:var(--lime)}.timer-display{font-size:clamp(40px,8vw,70px);font-variant-numeric:tabular-nums;font-weight:900;letter-spacing:-2px;text-align:center;padding:20px 0 5px}.timer-caption{text-align:center;color:var(--muted);font-size:11px;margin-bottom:20px}.timer-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}.progress-line{height:7px;background:#273246;border-radius:10px;overflow:hidden;margin:18px 0}.progress-line span{display:block;height:100%;width:0;background:var(--lime);transition:width .2s}.result-grid{grid-template-columns:repeat(3,1fr);margin-top:18px}.result-value{font-size:clamp(20px,4vw,30px);font-weight:900;margin-top:8px}.result-value small{font-size:11px;color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:35px 10px;font-size:13px}.history-item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:15px 0;border-bottom:1px solid #273246}.history-item:last-child{border-bottom:0}.history-item b{font-size:13px}.history-item small{display:block;color:var(--muted);margin-top:5px;font-size:10px}.history-time{font-weight:900;font-size:20px;color:var(--lime);text-align:right}.history-time small{color:var(--muted);font-size:10px}.tabs{position:fixed;bottom:0;left:0;right:0;z-index:10;background:#090d15ed;border-top:1px solid #263044;backdrop-filter:blur(18px);padding:10px max(12px,calc((100vw - 700px)/2)) calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.tab{border:0;background:transparent;color:#7f8ba0;border-radius:13px;padding:8px 4px;font-size:10px;font-weight:800}.tab .ico{font-size:19px;display:block;margin-bottom:4px}.tab.active{color:var(--lime);background:#c8ff3810}.note{color:var(--muted);font-size:10px;line-height:1.6;margin-top:16px}.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 0;border-bottom:1px solid #273246}.toggle-row b{font-size:13px}.toggle-row small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.switch{appearance:none;width:44px;height:25px;background:#344054;border-radius:99px;position:relative;cursor:pointer;flex-shrink:0}.switch:checked{background:var(--lime)}.switch:before{content:"";position:absolute;width:19px;height:19px;border-radius:50%;background:white;left:3px;top:3px;transition:.2s}.switch:checked:before{left:22px;background:#111}.toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-150%);transition:.3s;background:#d8ff75;color:#111;padding:12px 18px;border-radius:12px;font-size:12px;font-weight:800;z-index:50;box-shadow:0 10px 40px #0008}.toast.show{transform:translate(-50%,0)}.warning{padding:12px 14px;background:#2a2415;border:1px solid #554722;color:#d8c68c;border-radius:13px;font-size:11px;line-height:1.5;margin-top:15px}
+@media(max-width:760px){.app{padding:18px 13px 105px}.dashboard,.split{grid-template-columns:1fr}.distance-grid{grid-template-columns:repeat(2,1fr)}.card{padding:17px}.topbar{margin-bottom:22px}.status{font-size:0}.status .dot{margin:0}.result-grid{grid-template-columns:1fr 1fr}.result-grid .card:last-child{grid-column:1/-1}.stats{gap:7px}.stat{padding:11px 8px}.stat strong{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast">Tersimpan!</div>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="logo">R</div><div><h1>RACEBOX</h1><small>DRAG PERFORMANCE SYSTEM</small></div></div>
+  <div class="status"><span class="dot"></span><span id="gpsStatus">MODE MANUAL</span></div>
+</header>
+
+<main>
+<section class="page active" id="page-home">
+  <div class="eyebrow">PERFORMANCE OVERVIEW</div><h2 class="heading">Ready to run<span style="color:var(--lime)">.</span></h2><p class="sub">Pantau kecepatan dan catat waktu drag dalam satu dashboard.</p>
+  <div class="grid dashboard">
+    <article class="card">
+      <div class="card-title"><span>Speedometer</span><span class="pill" id="speedMode">DEMO</span></div>
+      <div class="speed-wrap"><div class="gauge"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="track" cx="100" cy="100" r="90"/><circle class="progress" id="gaugeProgress" cx="100" cy="100" r="90"/></svg><div class="gauge-inner"><div class="speed-num" id="speedValue">0</div><div class="speed-unit">KM/H</div><div class="gauge-caption" id="speedCaption">MENUNGGU DATA</div></div></div></div>
+      <div class="stats"><div class="stat"><label>MAX SPEED</label><strong id="maxSpeed">0</strong> <em>km/h</em></div><div class="stat"><label>JARAK</label><strong id="liveDistance">0.00</strong> <em>km</em></div><div class="stat"><label>WAKTU</label><strong id="liveDuration">00:00</strong></div></div>
+      <div class="quick-actions"><button class="btn primary" id="gpsBtn">Aktifkan GPS</button><button class="btn secondary" id="demoBtn">Demo Speed</button></div>
+      <p class="note">GPS menggunakan lokasi perangkat dan perlu izin. Mode demo hanya simulasi, bukan pengukuran nyata.</p>
+    </article>
+    <article class="card">
+      <div class="card-title"><span>Quick access</span><span class="pill">RACE TOOLS</span></div>
+      <div class="feature-list">
+        <button class="feature" data-go="drag"><span class="feature-icon">↗</span><span><b>Drag Meter</b><small>20 m · 100 m · 201 m · 203 m</small></span><span class="arrow">›</span></button>
+        <button class="feature" data-go="timer"><span class="feature-icon">◷</span><span><b>Distance Timer</b><small>Timer jarak 201–3000 meter</small></span><span class="arrow">›</span></button>
+        <button class="feature" data-go="history"><span class="feature-icon">▤</span><span><b>History & Results</b><small>Lihat hasil lari yang tersimpan</small></span><span class="arrow">›</span></button>
+      </div>
+      <div class="warning">Gunakan fitur pengukuran hanya di area tertutup yang aman. Jangan mengoperasikan ponsel saat berkendara.</div>
+    </article>
+  </div>
+</section>
+
+<section class="page" id="page-drag">
+  <div class="eyebrow">DISTANCE PERFORMANCE</div><h2 class="heading">Drag meter<span style="color:var(--lime)">.</span></h2><p class="sub">Pilih jarak, mulai pencatatan, lalu hentikan saat mencapai garis akhir.</p>
+  <div class="grid split">
+    <article class="card">
+      <div class="card-title"><span>Pilih jarak drag</span><span class="pill">METER</span></div>
+      <div class="distance-grid">
+        <button class="distance selected" data-distance="20"><strong>20</strong><span>METER</span></button>
+        <button class="distance" data-distance="100"><strong>100</strong><span>METER</span></button>
+        <button class="distance" data-distance="201"><strong>201</strong><span>METER</span></button>
+        <button class="distance" data-distance="203"><strong>203</strong><span>METER</span></button>
+      </div>
+      <div class="field"><label>JARAK KUSTOM (METER)</label><input id="customDistance" type="number" min="1" max="10000" placeholder="Misal: 402"></div>
+      <div class="timer-display" id="dragClock">00:00.000</div><div class="timer-caption" id="dragCaption">SIAP MEMULAI · 20 M</div>
+      <div class="timer-controls"><button class="btn primary" id="dragStart">▶ Mulai</button><button class="btn secondary" id="dragStop" disabled>■ Selesai</button></div>
+      <div class="progress-line"><span id="dragProgress"></span></div>
+      <div class="quick-actions"><button class="btn secondary" id="dragReset">Reset</button><button class="btn secondary" id="dragSave" disabled>Simpan hasil</button></div>
+      <p class="note">Timer manual memakai tombol mulai/selesai. Akurasi bergantung pada reaksi pengguna; bukan sensor timing gate profesional.</p>
+    </article>
+    <article class="card">
+      <div class="card-title"><span>Hasil terakhir</span><span class="pill">LAST RUN</span></div>
+      <div id="lastDrag"><div class="empty">Belum ada hasil drag.<br>Mulai sesi untuk melihat hasil.</div></div>
+      <div class="warning">Pengukuran GPS bisa memiliki jeda dan deviasi. Untuk hasil kompetisi, gunakan alat timing resmi.</div>
+    </article>
+  </div>
+</section>
+
+<section class="page" id="page-timer">
+  <div class="eyebrow">CUSTOM DISTANCE TIMER</div><h2 class="heading">Distance timer<span style="color:var(--lime)">.</span></h2><p class="sub">Buat sesi waktu untuk jarak 201 hingga 3000 meter.</p>
+  <div class="grid split">
+    <article class="card">
+      <div class="card-title"><span>Konfigurasi sesi</span><span class="pill">201–3000 M</span></div>
+      <div class="field"><label>TARGET JARAK (METER)</label><input id="timerDistance" type="number" min="201" max="3000" value="201"></div>
+      <div class="timer-display" id="mainClock">00:00.000</div><div class="timer-caption" id="timerCaption">SIAP MEMULAI SESI</div>
+      <div class="timer-controls"><button class="btn primary" id="timerStart">▶ Mulai</button><button class="btn secondary" id="timerStop" disabled>■ Selesai</button></div>
+      <div class="quick-actions"><button class="btn secondary" id="timerReset">Reset sesi</button><button class="btn secondary" id="timerSave" disabled>Simpan hasil</button></div>
+      <p class="note">Ini adalah stopwatch untuk durasi lintasan yang kamu tentukan, bukan deteksi otomatis jarak. Tekan selesai saat mencapai target.</p>
+    </article>
+    <article class="card">
+      <div class="card-title"><span>Ringkasan sesi</span><span class="pill">LIVE</span></div>
+      <div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><label>TARGET</label><strong id="timerTargetStat">201</strong> <em>m</em></div><div class="stat"><label>STATUS</label><strong id="timerStateStat" style="font-size:13px">READY</strong></div></div>
+      <div class="result-grid" style="grid-template-columns:1fr 1fr"><div class="stat"><label>ELAPSED</label><strong id="timerElapsedStat">0.000</strong> <em>s</em></div><div class="stat"><label>AVG SPEED*</label><strong id="timerAvgStat">—</strong> <em>km/h</em></div></div>
+      <p class="note">*Kecepatan rata-rata dihitung dari jarak target dibagi waktu yang dicatat, bukan pembacaan sensor langsung.</p>
+      <div class="warning">Pilih tempat yang legal dan tertutup untuk kegiatan uji kendaraan. Jangan menguji kecepatan di jalan umum.</div>
+    </article>
+  </div>
+</section>
+
+<section class="page" id="page-history">
+  <div class="eyebrow">SESSION ARCHIVE</div><h2 class="heading">History & results<span style="color:var(--lime)">.</span></h2><p class="sub">Semua hasil tersimpan lokal di perangkat ini.</p>
+  <article class="card">
+    <div class="card-title"><span>Riwayat pengukuran</span><button class="btn danger" id="clearHistory" style="padding:8px 11px">Hapus semua</button></div>
+    <div id="historyList"><div class="empty">Belum ada sesi tersimpan.</div></div>
+  </article>
+  <div class="grid result-grid">
+    <article class="card"><div class="card-title">Total sesi</div><div class="result-value" id="totalRuns">0</div></article>
+    <article class="card"><div class="card-title">Best time</div><div class="result-value" id="bestTime">—</div></article>
+    <article class="card"><div class="card-title">Rata-rata</div><div class="result-value" id="avgTime">—</div></article>
+  </div>
+</section>
+
+<section class="page" id="page-settings">
+  <div class="eyebrow">PERSONALIZATION</div><h2 class="heading">Settings<span style="color:var(--lime)">.</span></h2><p class="sub">Atur preferensi aplikasi Racebox.</p>
+  <article class="card">
+    <div class="card-title"><span>Preferensi</span><span class="pill">LOCAL</span></div>
+    <div class="toggle-row"><div><b>Suara saat mulai / selesai</b><small>Bunyi singkat untuk status timer.</small></div><input class="switch" type="checkbox" id="soundSetting" checked></div>
+    <div class="toggle-row"><div><b>Getaran perangkat</b><small>Getaran singkat jika didukung browser.</small></div><input class="switch" type="checkbox" id="vibrateSetting" checked></div>
+    <div class="field"><label>UNIT KECEPATAN</label><select id="unitSetting"><option value="kmh">Kilometer per jam (km/h)</option><option value="mph">Miles per jam (mph)</option></select></div>
+    <div class="field"><label>DEMO SPEED MAKSIMUM</label><select id="demoMax"><option value="120">120 km/h</option><option value="180" selected>180 km/h</option><option value="240">240 km/h</option></select></div>
+    <button class="btn primary" id="saveSettings">Simpan pengaturan</button>
+    <p class="note">Racebox adalah prototipe web. Riwayat dan pengaturan disimpan di browser yang digunakan.</p>
+  </article>
+  <article class="card" style="margin-top:16px"><div class="card-title">Tentang Racebox</div><p class="sub" style="margin:12px 0 0">Racebox Drag Performance System · v1.0<br>Speedometer GPS, stopwatch drag, catatan hasil, dan pengaturan.</p></article>
+</section>
+</main>
+</div>
+
+<nav class="tabs" aria-label="Navigasi utama">
+  <button class="tab active" data-page="home"><span class="ico">⌂</span>Home</button>
+  <button class="tab" data-page="drag"><span class="ico">↗</span>Drag meter</button>
+  <button class="tab" data-page="history"><span class="ico">▤</span>History</button>
+  <button class="tab" data-page="settings"><span class="ico">⚙</span>Settings</button>
+</nav>
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const storeKey='racebox_history_v1',settingsKey='racebox_settings_v1';
+let historyData=JSON.parse(localStorage.getItem(storeKey)||'[]');
+let chosenDistance=20,dragState='ready',dragStartAt=0,dragFrame=null,dragElapsed=0,lastDragResult=null;
+let timerState='ready',timerStartAt=0,timerFrame=null,timerElapsed=0,lastTimerResult=null;
+let gpsWatch=null,lastPosition=null,gpsDistance=0,gpsMax=0,gpsStarted=0,demoInterval=null,demoSpeed=0,demoActive=false;
+let settings={sound:true,vibrate:true,unit:'kmh',demoMax:180,...JSON.parse(localStorage.getItem(settingsKey)||'{}')};
+const fmt=ms=>{ms=Math.max(0,ms);const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60,mm=Math.floor(ms%1000);return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(mm).padStart(3,'0')}`};
+const secs=ms=>(ms/1000).toFixed(3);
+function toast(msg){$('#toast').textContent=msg;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),2100)}
+function beep(){if(!settings.sound)return;try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=780;g.gain.value=.06;o.start();o.stop(c.currentTime+.11);setTimeout(()=>c.close(),250)}catch(e){}}
+function buzz(){if(settings.vibrate&&navigator.vibrate)navigator.vibrate(70)}
+function navigate(page){$$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));$$('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===page));window.scrollTo({top:0,behavior:'smooth'});if(page==='history')renderHistory()}
+$$('[data-page]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.page)));
+$$('[data-go]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.go)));
+function setGauge(v){let max=Number(settings.demoMax)||180,ratio=Math.min(1,Math.max(0,v/max));$('#gaugeProgress').style.strokeDasharray=`${377*ratio} 565`;let shown=settings.unit==='mph'?v*.621371:v;$('#speedValue').textContent=Math.round(shown);$('.speed-unit').textContent=settings.unit==='mph'?'MPH':'KM/H';}
+function updateSpeed(v){setGauge(v);gpsMax=Math.max(gpsMax,v);$('#maxSpeed').textContent=Math.round(settings.unit==='mph'?gpsMax*.621371:gpsMax);$('#speedCaption').textContent=demoActive?'SIMULASI AKTIF':gpsWatch!==null?'GPS AKTIF':'MENUNGGU DATA'}
+function enableGPS(){if(!navigator.geolocation){toast('GPS tidak didukung browser');return}if(!window.isSecureContext){toast('GPS perlu HTTPS atau localhost');}if(gpsWatch!==null){navigator.geolocation.clearWatch(gpsWatch);gpsWatch=null;$('#gpsBtn').textContent='Aktifkan GPS';$('#gpsStatus').textContent='MODE MANUAL';$('#speedMode').textContent='DEMO';toast('GPS dihentikan');return}
+demoActive=false;clearInterval(demoInterval);$('#demoBtn').textContent='Demo Speed';$('#gpsBtn').textContent='Hentikan GPS';$('#gpsStatus').textContent='MENCARI GPS';$('#speedMode').textContent='GPS';
+gpsWatch=navigator.geolocation.watchPosition(pos=>{let p=pos.coords;if(lastPosition&&p.speed!==null&&p.speed>=0){const delta=Math.max(0,(pos.timestamp-lastPosition.timestamp)/1000);gpsDistance+=(p.speed*delta)/1000}lastPosition={timestamp:pos.timestamp,coords:p};let v=p.speed!==null&&p.speed>=0?p.speed*3.6:0;updateSpeed(v);$('#liveDistance').textContent=gpsDistance.toFixed(2);$('#liveDuration').textContent=fmt(pos.timestamp-gpsStarted).slice(0,5);$('#gpsStatus').textContent=p.accuracy<30?'GPS LOCK':'GPS AKTIF';},err=>{toast('GPS gagal: izinkan akses lokasi');$('#gpsStatus').textContent='GPS ERROR';if(gpsWatch!==null){navigator.geolocation.clearWatch(gpsWatch);gpsWatch=null;$('#gpsBtn').textContent='Aktifkan GPS'}},{enableHighAccuracy:true,maximumAge:500,timeout:12000});gpsStarted=Date.now();lastPosition=null;gpsDistance=0;gpsMax=0}
+$('#gpsBtn').addEventListener('click',enableGPS);
+$('#demoBtn').addEventListener('click',()=>{if(demoActive){clearInterval(demoInterval);demoActive=false;$('#demoBtn').textContent='Demo Speed';$('#speedMode').textContent='DEMO';updateSpeed(0);return}if(gpsWatch!==null){navigator.geolocation.clearWatch(gpsWatch);gpsWatch=null;$('#gpsBtn').textContent='Aktifkan GPS'}demoActive=true;demoSpeed=0;gpsMax=0;$('#demoBtn').textContent='Stop Demo';$('#speedMode').textContent='SIMULASI';$('#gpsStatus').textContent='DEMO AKTIF';let dir=1;demoInterval=setInterval(()=>{demoSpeed+=dir*(Math.random()*4+1);if(demoSpeed>=Number(settings.demoMax)){demoSpeed=Number(settings.demoMax);dir=-1}if(demoSpeed<=0){demoSpeed=0;dir=1}updateSpeed(demoSpeed)},300)});
+$$('[data-distance]').forEach(b=>b.addEventListener('click',()=>{if(dragState==='running')return;$$('[data-distance]').forEach(x=>x.classList.toggle('selected',x===b));chosenDistance=Number(b.dataset.distance);$('#customDistance').value='';$('#dragCaption').textContent=`SIAP MEMULAI · ${chosenDistance} M`}));
+$('#customDistance').addEventListener('input',e=>{if(dragState==='running')return;let v=Number(e.target.value);if(v>0&&v<=10000){chosenDistance=v;$$('[data-distance]').forEach(x=>x.classList.remove('selected'));$('#dragCaption').textContent=`SIAP MEMULAI · ${chosenDistance} M`}});
+function dragTick(){if(dragState!=='running')return;dragElapsed=performance.now()-dragStartAt;$('#dragClock').textContent=fmt(dragElapsed);dragFrame=requestAnimationFrame(dragTick)}
+function startDrag(){if(dragState==='running')return;chosenDistance=Math.max(1,Math.min(10000,Number($('#customDistance').value)||chosenDistance));dragState='running';dragElapsed=0;dragStartAt=performance.now();$('#dragStart').disabled=true;$('#dragStop').disabled=false;$('#dragSave').disabled=true;$('#dragCaption').textContent=`SEDANG BERJALAN · ${chosenDistance} M`;$('#dragProgress').style.width='8%';beep();buzz();dragTick()}
+function stopDrag(){if(dragState!=='running')return;dragElapsed=performance.now()-dragStartAt;cancelAnimationFrame(dragFrame);dragState='done';lastDragResult={type:'Drag Meter',distance:chosenDistance,time:dragElapsed,avg:dragElapsed>0?chosenDistance/(dragElapsed/1000)*3.6:0,date:new Date().toISOString()};$('#dragClock').textContent=fmt(dragElapsed);$('#dragCaption').textContent=`SELESAI · ${chosenDistance} M`;$('#dragProgress').style.width='100%';$('#dragStart').disabled=false;$('#dragStop').disabled=true;$('#dragSave').disabled=false;renderLastDrag();beep();buzz()}
+function resetDrag(){cancelAnimationFrame(dragFrame);dragState='ready';dragElapsed=0;lastDragResult=null;$('#dragClock').textContent='00:00.000';$('#dragCaption').textContent=`SIAP MEMULAI · ${chosenDistance} M`;$('#dragProgress').style.width='0';$('#dragStart').disabled=false;$('#dragStop').disabled=true;$('#dragSave').disabled=true}
+$('#dragStart').addEventListener('click',startDrag);$('#dragStop').addEventListener('click',stopDrag);$('#dragReset').addEventListener('click',resetDrag);
+function renderLastDrag(){if(!lastDragResult)return;let r=lastDragResult;$('#lastDrag').innerHTML=`<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><label>JARAK</label><strong>${r.distance}</strong> <em>m</em></div><div class="stat"><label>WAKTU</label><strong>${secs(r.time)}</strong> <em>s</em></div></div><div class="stat" style="margin-top:10px"><label>KECEPATAN RATA-RATA</label><strong>${r.avg.toFixed(1)}</strong> <em>km/h</em></div>`}
+function saveResult(r){historyData.unshift({...r,id:Date.now()});historyData=historyData.slice(0,100);localStorage.setItem(storeKey,JSON.stringify(historyData));renderHistory();toast('Hasil tersimpan di History')}
+$('#dragSave').addEventListener('click',()=>{if(lastDragResult){saveResult(lastDragResult);$('#dragSave').disabled=true}});
+function timerTick(){if(timerState!=='running')return;timerElapsed=performance.now()-timerStartAt;$('#mainClock').textContent=fmt(timerElapsed);$('#timerElapsedStat').textContent=secs(timerElapsed);$('#timerAvgStat').textContent=timerElapsed>0?(Number($('#timerDistance').value)/(timerElapsed/1000)*3.6).toFixed(1):'—';timerFrame=requestAnimationFrame(timerTick)}
+function startTimer(){let d=Number($('#timerDistance').value);if(!Number.isFinite(d)||d<201||d>3000){toast('Jarak harus 201–3000 meter');$('#timerDistance').focus();return}timerState='running';timerElapsed=0;timerStartAt=performance.now();$('#timerStart').disabled=true;$('#timerStop').disabled=false;$('#timerSave').disabled=true;$('#timerDistance').disabled=true;$('#timerCaption').textContent=`SESI BERJALAN · ${d} M`;$('#timerTargetStat').textContent=d;$('#timerStateStat').textContent='RUNNING';beep();buzz();timerTick()}
+function stopTimer(){if(timerState!=='running')return;timerElapsed=performance.now()-timerStartAt;cancelAnimationFrame(timerFrame);timerState='done';let d=Number($('#timerDistance').value);lastTimerResult={type:'Distance Timer',distance:d,time:timerElapsed,avg:d/(timerElapsed/1000)*3.6,date:new Date().toISOString()};$('#mainClock').textContent=fmt(timerElapsed);$('#timerElapsedStat').textContent=secs(timerElapsed);$('#timerAvgStat').textContent=lastTimerResult.avg.toFixed(1);$('#timerCaption').textContent=`SELESAI · ${d} M`;$('#timerStateStat').textContent='DONE';$('#timerStart').disabled=false;$('#timerStop').disabled=true;$('#timerSave').disabled=false;beep();buzz()}
+function resetTimer(){cancelAnimationFrame(timerFrame);timerState='ready';timerElapsed=0;lastTimerResult=null;$('#mainClock').textContent='00:00.000';$('#timerCaption').textContent='SIAP MEMULAI SESI';$('#timerElapsedStat').textContent='0.000';$('#timerAvgStat').textContent='—';$('#timerStateStat').textContent='READY';$('#timerStart').disabled=false;$('#timerStop').disabled=true;$('#timerSave').disabled=true;$('#timerDistance').disabled=false}
+$('#timerStart').addEventListener('click',startTimer);$('#timerStop').addEventListener('click',stopTimer);$('#timerReset').addEventListener('click',resetTimer);$('#timerSave').addEventListener('click',()=>{if(lastTimerResult){saveResult(lastTimerResult);$('#timerSave').disabled=true}});
+function renderHistory(){if(!historyData.length){$('#historyList').innerHTML='<div class="empty">Belum ada sesi tersimpan.</div>'}else{$('#historyList').innerHTML=historyData.map(r=>`<div class="history-item"><div><b>${r.type} · ${r.distance} m</b><small>${new Date(r.date).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'})}</small><small>Rata-rata ${r.avg.toFixed(1)} km/h</small></div><div class="history-time">${secs(r.time)}<small>detik</small></div></div>`).join('')}
+$('#totalRuns').textContent=historyData.length;if(historyData.length){let times=historyData.map(r=>r.time);$('#bestTime').textContent=secs(Math.min(...times))+' s';$('#avgTime').textContent=secs(times.reduce((a,b)=>a+b,0)/times.length)+' s'}else{$('#bestTime').textContent='—';$('#avgTime').textContent='—'}}
+$('#clearHistory').addEventListener('click',()=>{if(confirm('Hapus semua riwayat Racebox?')){historyData=[];localStorage.removeItem(storeKey);renderHistory();toast('Riwayat dihapus')}});
+function loadSettings(){ $('#soundSetting').checked=!!settings.sound;$('#vibrateSetting').checked=!!settings.vibrate;$('#unitSetting').value=settings.unit;$('#demoMax').value=String(settings.demoMax);setGauge(demoSpeed)}
+$('#saveSettings').addEventListener('click',()=>{settings={sound:$('#soundSetting').checked,vibrate:$('#vibrateSetting').checked,unit:$('#unitSetting').value,demoMax:Number($('#demoMax').value)};localStorage.setItem(settingsKey,JSON.stringify(settings));setGauge(demoSpeed);toast('Pengaturan tersimpan')});
+loadSettings();renderHistory();
+</script>
+</body>
+</html>
